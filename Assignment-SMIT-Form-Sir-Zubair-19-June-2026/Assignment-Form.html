@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <title>Toastify Form</title>
+  <style>
+    body {
+      background-color: rgba(214, 149, 69, 0.651);
+      font-family: Arial, sans-serif;
+    }
+    #toastify {
+      border-radius: 20px;
+      width: 400px;
+      padding: 20px;
+      background-color: rgb(255, 240, 28);
+      margin: 50px auto;
+    }
+    #email, #password, #confirmpassword, #contact, #address {
+      width: 300px;
+      height: 50px;
+      border-radius: 20px;
+      border-width: 2px;
+      margin: 10px 0;
+      padding: 5px;
+    }
+    #email { background-color: rgba(216, 33, 155, 0.233); color: rgb(42, 13, 122); }
+    #password, #confirmpassword, #contact, #address { background-color: aquamarine; }
+    .password-container {
+      position: relative;
+      width: 300px;
+    }
+    .password-container input {
+      width: 100%;
+      padding-right: 40px;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+    .eye-icon-open, .eye-icon-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      display: none;
+    }
+    .eye-icon-close { display: inline; }
+  </style>
+</head>
+<body>
+  <div id="toastify">
+    <h3>Toastify Form-By Khurram Mansoor  </h3>
+    <h4>  </h4>
+    <input type="text" placeholder="Enter Email" id="email"><br>
+    <div class="password-container">
+      <input type="password" placeholder="Enter Password" id="password">
+      <span class="eye-icon-open" id="openeye" onclick="togglePassword(this)">👁️‍🗨️</span>
+      <span class="eye-icon-close" id="closeeye" onclick="togglePassword(this)">🙈</span>
+    </div>
+    <input type="password" placeholder="Confirm Password" id="confirmpassword"><br>
+    <input type="tel" placeholder="Enter Number" id="contact"><br>
+    <input type="text" placeholder="Enter Address" id="address"><br>
+    <button id="submitbtn" onclick="handleSubmit()">Submit</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const confirmpassword = document.getElementById("confirmpassword");
+    const contact = document.getElementById("contact");
+    const address = document.getElementById("address");
+    const submitbtn = document.getElementById("submitbtn");
+    const openeye = document.getElementById("openeye");
+    const closeeye = document.getElementById("closeeye");
+
+    let check = false;
+
+    function showToast(message) {
+      Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        style: { background: "linear-gradient(to right, #0000ff, #96c93d)" }
+      }).showToast();
+    }
+
+    function validateForm() {
+      const emailVal = email.value.trim();
+      const passwordVal = password.value.trim();
+      const confirmVal = confirmpassword.value.trim();
+      const contactVal = contact.value.trim();
+      const addressVal = address.value.trim();
+
+      if (emailVal === "") { showToast("Enter Email Address"); email.focus(); return false; }
+      if (!emailVal.includes("@")) { alert("Email must include @"); return false; }
+      if (emailVal.indexOf("@") < 3) { alert("At least 3 letters before @"); return false; }
+      if (!emailVal.endsWith(".com")) { alert("Email must end with .com"); return false; }
+      if (passwordVal === "") { showToast("Enter password"); password.focus(); return false; }
+      if (confirmVal === "") { showToast("Confirm your password"); confirmpassword.focus(); return false; }
+      if (passwordVal !== confirmVal) { alert("Passwords do not match"); return false; }
+      if (contactVal === "") { showToast("Enter contact"); contact.focus(); return false; }
+      if (addressVal === "") { showToast("Enter address"); address.focus(); return false; }
+
+      return true;
+    }
+
+    function handleSubmit() {
+      submitbtn.disabled = true;
+      if (validateForm()) {
+        showToast("Form Submitted Successfully!");
+        email.value = "";
+        password.value = "";
+        confirmpassword.value = "";
+        contact.value = "";
+        address.value = "";
+        email.focus();
+      }
+      setTimeout(() => { submitbtn.disabled = false; check = false; }, 3000);
+    }
+
+    function togglePassword(tag) {
+      if (tag.id === "closeeye") {
+        openeye.style.display = "inline";
+        closeeye.style.display = "none";
+        password.type = "text";
+      } else {
+        closeeye.style.display = "inline";
+        openeye.style.display = "none";
+        password.type = "password";
+      }
+    }
+
+    // Allow Enter key to submit
+    [email, password, confirmpassword, contact, address].forEach(field => {
+      field.addEventListener("keypress", e => {
+        if (e.keyCode === 13 && !check) {
+          check = true;
+          if (validateForm()) handleSubmit();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
